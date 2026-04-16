@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local tool state
+.codex
+
+# Model/data artifacts
+outputs/
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+
+# Optional local datasets
+data/c4-validation.json
+data/c4-validation*.json.gz
+
+# Logs and reports
+*.log
+wandb/
+runs/
+
+# OS/editor
+.DS_Store
+.idea/
+.vscode/

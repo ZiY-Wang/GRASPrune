@@ -1,0 +1,10 @@
+torch==2.7.0
+transformers==4.51.0
+datasets==2.16.1
+accelerate
+sentencepiece
+tqdm
+safetensors
+numpy
+lm-eval==0.4.1
+protobuf
