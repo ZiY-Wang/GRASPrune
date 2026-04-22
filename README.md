@@ -122,10 +122,13 @@ WikiText-2 and PTB are loaded through Hugging Face `datasets`.
 If you find GRASPrune useful, please cite:
 
 ```bibtex
-@article{wang2026grasprune,
-  title={GRASPrune: Global Gating for Budgeted Structured Pruning of Large Language Models},
-  author={Wang, Ziyang and Xiao, Jiangfeng and Xiao, Chuan and Li, Ruoxiang and Mao, Rui and Qin, Jianbin},
-  journal={arXiv preprint arXiv:2604.19398},
-  year={2026}
+@misc{wang2026grasprune,
+      title={GRASPrune: Global Gating for Budgeted Structured Pruning of Large Language Models}, 
+      author={Ziyang Wang and Jiangfeng Xiao and Chuan Xiao and Ruoxiang Li and Rui Mao and Jianbin Qin},
+      year={2026},
+      eprint={2604.19398},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2604.19398}, 
 }
 ```
