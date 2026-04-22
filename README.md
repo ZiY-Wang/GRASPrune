@@ -1,13 +1,12 @@
 # GRASPrune
 
-GRASPrune is a structured pruning toolkit for decoder-only language models. It learns global gates over FFN intermediate channels and attention KV groups, hardens the learned gates into deterministic masks, applies a lightweight rescale compensation stage, and exports a loadable pruned checkpoint.
+Official implementation of **GRASPrune: Global Gating for Budgeted Structured Pruning of Large Language Models**, accepted to **ACL 2026 Main Conference**.
 
-The current implementation supports:
+[[Paper]](https://arxiv.org/abs/2604.19398)
 
-- LLaMA-style models, such as `meta-llama/Llama-2-7b-hf`
-- Qwen-style models, such as `Qwen/Qwen3-8B`
-- Perplexity evaluation on WikiText-2, PTB, and optional C4
-- Accuracy evaluation through `lm-eval`
+GRASPrune is a post-training structured pruning toolkit for decoder-only LLMs. It learns global gates over FFN intermediate channels and attention KV groups, projects them into budget-feasible hard masks, applies lightweight rescale compensation, and exports a dense pruned checkpoint.
+
+The code currently supports LLaMA-style and Qwen-style models, including `meta-llama/Llama-2-7b-hf` and `Qwen/Qwen3-8B`.
 
 ## Installation
 
@@ -17,17 +16,9 @@ Python 3.10 is recommended.
 pip install -r requirements.txt
 ```
 
-If you use `uv`:
+## Pruning
 
-```bash
-uv venv
-source .venv/bin/activate
-uv pip install -r requirements.txt
-```
-
-## Train and Prune
-
-Run commands from the `GRASPrune` directory.
+Run commands from the repository root.
 
 ### LLaMA
 
@@ -54,30 +45,33 @@ python train.py \
   --num-samples 512
 ```
 
-If the model is not already cached locally, add:
+If the model is not cached locally, add:
 
 ```bash
 --allow-remote-model
 ```
 
+Main options:
+
+- `--keep-ratio`: retained structural budget.
+- `--epochs`: number of gate-training epochs.
+- `--num-samples`: number of calibration sequences.
+- `--max-len`: calibration sequence length.
+- `--output-dir`: custom output directory.
+
 ## Outputs
 
-By default, checkpoints are saved under `outputs/`:
+Checkpoints are saved under `outputs/` by default. Each output directory contains:
 
-```bash
-outputs/Llama-2-7b-hf_pruned_60/
-outputs/Qwen3-8B_pruned_80/
+```text
+pruned_state_dict.safetensors
+meta.json
+layer_mask_report.csv
 ```
 
-Each output directory contains:
+where `pruned_state_dict.safetensors` stores the exported dense pruned weights, `meta.json` stores the pruning metadata required for loading, and `layer_mask_report.csv` records layer-wise retention statistics.
 
-- `pruned_state_dict.safetensors`
-- `meta.json`
-- `layer_mask_report.csv`
-
-The exported checkpoint can be reloaded with the provided evaluation scripts.
-
-## Evaluate a Pruned Checkpoint
+## Evaluation
 
 ### Perplexity
 
@@ -111,29 +105,27 @@ python eval_pruned_acc.py \
   --device cuda:0
 ```
 
-## Common Options
+Accuracy evaluation uses `lm-eval`.
 
-- `--keep-ratio`: target retained structural budget.
-- `--epochs`: number of gate-training epochs.
-- `--num-samples`: number of training blocks used for gate optimization.
-- `--max-len`: sequence length for pruning data.
-- `--run-ppl-eval`: run perplexity evaluation after pruning.
-- `--skip-acc-eval`: skip accuracy evaluation after pruning.
-- `--output-dir`: custom output directory.
-- `--report-csv`: custom mask report path.
+## C4 Evaluation
 
-## C4 Evaluation Data
+C4 evaluation is optional. To enable it, prepare:
 
-C4 support is optional. To evaluate on C4, prepare a local file:
-
-```bash
+```text
 data/c4-validation.json
 ```
 
-Commands that include `c4` will fail if this file is missing. WikiText-2 and PTB are loaded through Hugging Face `datasets`.
+WikiText-2 and PTB are loaded through Hugging Face `datasets`.
 
-## Notes
+## Citation
 
-- Qwen models usually require `--trust-remote-code`.
-- Accuracy evaluation requires a working `lm-eval` installation.
-- Large models may require substantial GPU memory during training and evaluation.
+If you find GRASPrune useful, please cite:
+
+```bibtex
+@article{wang2026grasprune,
+  title={GRASPrune: Global Gating for Budgeted Structured Pruning of Large Language Models},
+  author={Wang, Ziyang and Xiao, Jiangfeng and Xiao, Chuan and Li, Ruoxiang and Mao, Rui and Qin, Jianbin},
+  journal={arXiv preprint arXiv:2604.19398},
+  year={2026}
+}
+```
